@@ -205,7 +205,7 @@ class TexasScheduler {
     /**
      * Removes leading zeros from month and day in an array of date strings.
      * @param {string[]} dateArray - An array of dates in 'mm/dd/yyyy' format.
-     * @returns {string[]} An array of dates in 'm/d/yyyy' (or 'mm/dd/yyyy' 
+     * @returns {string[]} An array of dates in 'm/d/yyyy' (or 'mm/dd/yyyy'
      * if no leading zeros existed) format.
      */
     private removeLeadingZeros(myDates) {
@@ -223,7 +223,7 @@ class TexasScheduler {
             // Join the parts back together using a single slash separator
             return `${newMonth}/${newDay}/${year}`;
         });
-    }    
+    }
 
     private isAvailableDateMatchMyDates(availableBookinDate: string) {
         const myDates = this.removeLeadingZeros(this.config.location.specificDates);

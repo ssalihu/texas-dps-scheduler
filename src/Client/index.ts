@@ -202,34 +202,18 @@ class TexasScheduler {
     private filterAndSortLocations(locations: AvailableLocationResponse[]): AvailableLocationResponse[] {
         return locations.sort((a, b) => a.Distance - b.Distance).filter((elem, index, self) => self.findIndex(obj => obj.Id === elem.Id) === index);
     }
-    /**
-     * Removes leading zeros from month and day in an array of date strings.
-     * @param {string[]} dateArray - An array of dates in 'mm/dd/yyyy' format.
-     * @returns {string[]} An array of dates in 'm/d/yyyy' (or 'mm/dd/yyyy'
-     * if no leading zeros existed) format.
-     */
-    private removeLeadingZeros(myDates) {
-        return myDates.map(dateString => {
-            // Split the date string into month, day, and year parts
-            const parts = dateString.split('/');
-            const month = parts[0];
-            const day = parts[1];
-            const year = parts[2];
-
-            // Use parseInt to convert the string parts to numbers, which automatically removes leading zeros
-            const newMonth = parseInt(month, 10);
-            const newDay = parseInt(day, 10);
-
-            // Join the parts back together using a single slash separator
-            return `${newMonth}/${newDay}/${year}`;
-        });
-    }
-
     private isAvailableDateMatchMyDates(availableBookinDate: string) {
-        const myDates = this.removeLeadingZeros(this.config.location.specificDates);
+        const myDates = this.config.location.specificDates;
         // Check if empty array OR array with only empty strings
         if (!myDates?.length || myDates.every(date => !date.trim())) return true;
-        const matchedDate = myDates.find(date => date && availableBookinDate.includes(date));
+
+        const availableDate = dayjs(availableBookinDate);
+        const matchedDate = myDates.find(date => {
+            if (!date.trim()) return false;
+            const preferredDate = dayjs(date, 'MM/DD/YYYY');
+            return availableDate.isSame(preferredDate, 'day');
+        });
+
         if (matchedDate) {
             console.log(`Available date ${availableBookinDate} matches with preferred date ${matchedDate}`);
         }
